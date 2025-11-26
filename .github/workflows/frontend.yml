@@ -10,32 +10,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout the repo
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      # 2️⃣ Setup NodeJS
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: '20'
 
+      # 3️⃣ Install dependencies
       - name: Install Dependencies
         run: npm install
         working-directory: ./Frontend
 
+      # 4️⃣ Build React app
       - name: Build React App
         run: npm run build
         working-directory: ./Frontend
 
-      - name: Zip build folder
-        run: zip -r release.zip ./Frontend/build
-
-      - name: Login to Azure using Service Principal
+      # 5️⃣ Login to Azure using Service Principal
+      - name: Login to Azure
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Deploy to Azure App Service
+      # 6️⃣ Deploy the build folder directly
+      - name: Deploy React build folder to Azure App Service
         uses: azure/webapps-deploy@v2
         with:
           app-name: tdas-frontend
-          package: release.zip
+          package: ./Frontend/build
