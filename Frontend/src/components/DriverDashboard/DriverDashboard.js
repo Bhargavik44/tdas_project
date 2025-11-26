@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import './DriverDashboard.css';
 import { useNavigate } from "react-router-dom";
 import { API_BASE } from "../../utils/api";
 
@@ -129,72 +130,52 @@ function DriverDashboard() {
   };
 
   return (
-    <div style={{ padding: "0", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <div className="driver-dashboard">
       {/* Navbar */}
-      <div style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "0.75rem 1rem",
-        backgroundColor: "#0d47a1",
-        color: "#fff"
-      }}>
-        <div style={{ fontWeight: 600 }}>Driver: {driverName || driverID}</div>
-        <div style={{ display: "flex", gap: "0.5rem" }}>
-          <button
-            onClick={() => alert("Profile coming soon")}
-            style={{ background: "#1976d2", color: "#fff", border: "none", padding: "0.4rem 0.8rem", borderRadius: 4, cursor: "pointer" }}
-          >
-            Profile
-          </button>
-          <button
-            onClick={handleLogout}
-            style={{ background: "#d32f2f", color: "#fff", border: "none", padding: "0.4rem 0.8rem", borderRadius: 4, cursor: "pointer" }}
-          >
-            Logout
-          </button>
+      <div className="dd-navbar">
+        <div className="driver-name">Driver: {driverName || driverID}</div>
+        <div className="nav-actions">
+          <button onClick={() => alert("Profile coming soon")} className="dd-btn dd-btn-profile">Profile</button>
+          <button onClick={handleLogout} className="dd-btn dd-btn-logout">Logout</button>
         </div>
       </div>
 
       {/* Content */}
-      <div style={{ padding: "1rem", flex: 1 }}>
-        <h2 style={{ marginTop: 0 }}>🚍 Driver Dashboard</h2>
-        <h3>Route: {routeName || "—"}</h3>
+      <div className="dd-content">
+        <div className="dd-header">
+          <div>
+            <h2>🚍 Driver Dashboard</h2>
+            <div className="route-name">Route: {routeName || "—"}</div>
+          </div>
+        </div>
 
-        <div id="stopsSection" style={{ marginTop: "1rem" }}>
+        <div id="stopsSection">
           <h3>Your Route Stops</h3>
           {busStops.length > 0 ? (
-            <div style={{ display: "grid", gap: "0.75rem" }}>
+            <div className="stops-grid">
               {busStops.map((stop, idx) => (
-                <div key={idx} style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  padding: "0.75rem 1rem",
-                  border: "1px solid #e0e0e0",
-                  borderRadius: 6
-                }}>
-                  <div>
-                    <div style={{ fontWeight: 600 }}>{stop.stopName}</div>
-                    <div style={{ color: "#555", fontSize: 14 }}>Scheduled arrival: {stop.arrivalTime}</div>
+                <div key={idx} className="stop-card">
+                  <div className="stop-meta">
+                    <div className="stop-name">{stop.stopName}</div>
+                    <div className="stop-time">Scheduled arrival: {stop.arrivalTime}</div>
                   </div>
                   <button
                     onClick={() => handleArrived(stop)}
                     disabled={(arrivedStopIds || []).includes(stop.stopID)}
-                    style={{ background: (arrivedStopIds || []).includes(stop.stopID) ? "#9e9e9e" : "#2e7d32", color: "#fff", border: "none", padding: "0.5rem 0.9rem", borderRadius: 4, cursor: (arrivedStopIds || []).includes(stop.stopID) ? "not-allowed" : "pointer" }}
+                    className={`stop-btn ${ (arrivedStopIds || []).includes(stop.stopID) ? 'disabled' : '' }`}
                   >
-                    {(arrivedStopIds || []).includes(stop.stopID) ? "Arrived" : "Arrived"}
+                    {(arrivedStopIds || []).includes(stop.stopID) ? "Arrived" : "Mark Arrived"}
                   </button>
                 </div>
               ))}
             </div>
           ) : (
-            <p>{routeStatusMsg || "No bus stops assigned yet."}</p>
+            <p className="empty-state">{routeStatusMsg || "No bus stops assigned yet."}</p>
           )}
         </div>
 
         {alertMessage && (
-          <div id="alertSection" style={{ marginTop: "1rem", color: "#b71c1c" }}>
+          <div id="alertSection" className="alert-section">
             <h3 style={{ marginTop: 0 }}>📢 Arrival Status:</h3>
             <p>{alertMessage}</p>
           </div>

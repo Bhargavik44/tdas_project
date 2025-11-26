@@ -33,7 +33,12 @@
 
 .button-group button:hover {
   background: rgba(255, 255, 255, 0.4);
-  transform: translateY(-3px);
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+}
+
+.button-group button:active{
+  transform: translateY(-1px) scale(0.995);
 }
 
 /* Forms */
@@ -54,6 +59,22 @@
   gap: 1rem;
   text-align: left;
   animation: fadeIn 0.3s ease;
+  transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+}
+
+.dashboard-form:hover{
+  transform: translateY(-8px);
+  box-shadow: 0 18px 45px rgba(0,0,0,0.35);
+}
+
+.dashboard-form input,
+.dashboard-form select {
+  transition: box-shadow .12s ease, transform .12s ease;
+}
+.dashboard-form input:hover,
+.dashboard-form select:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08) inset;
 }
 
 .dashboard-form h3 {
@@ -121,6 +142,11 @@
   align-items: center;
 }
 
+.bus-stop-list li:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+}
+
 .bus-stop-list button {
   background: #e63946;
   color: #fff;
@@ -133,6 +159,24 @@
 
 .bus-stop-list button:hover {
   background: #ff4b5c;
+}
+
+.admin-logout-button{
+  transition: transform .12s ease, box-shadow .12s ease, background-color .12s ease;
+}
+.admin-logout-button:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(230,57,70,0.18);
+  background-color: #c62828;
+}
+
+/* subtle button micro-interaction */
+.dashboard-form button{
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.dashboard-form button:hover{
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 12px 30px rgba(102,126,234,0.18);
 }
 
 .admin-logout-button {
