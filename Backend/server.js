@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import sql from "mssql";
 import { poolPromise, initializeTables } from "./database.js";
 import { sendSms } from "./sendSms.js";
 
@@ -217,12 +218,32 @@ app.post("/assign-driver", async (req, res) => {
 app.post("/add-bus-stop", async (req, res) => {
   const { routeID, stopName, arrivalTime } = req.body;
 
+  // Basic validation
+  if (!routeID || !stopName || arrivalTime === undefined) {
+    return res.status(400).json({ message: "routeID, stopName and arrivalTime are required" });
+  }
+
+  const routeIDInt = parseInt(routeID, 10);
+  if (Number.isNaN(routeIDInt)) {
+    return res.status(400).json({ message: "routeID must be a number" });
+  }
+
   try {
     const pool = await poolPromise;
+
+    // Check route exists
+    const routeCheck = await pool.request()
+      .input("routeID", sql.Int, routeIDInt)
+      .query(`SELECT routeID FROM driverRoutes WHERE routeID = @routeID`);
+
+    if (!routeCheck.recordset || routeCheck.recordset.length === 0) {
+      return res.status(400).json({ message: "Route not found" });
+    }
+
     await pool.request()
-      .input("routeID", routeID)
-      .input("stopName", stopName)
-      .input("arrivalTime", arrivalTime)
+      .input("routeID", sql.Int, routeIDInt)
+      .input("stopName", sql.NVarChar(100), stopName)
+      .input("arrivalTime", sql.NVarChar(50), arrivalTime)
       .query(`
         INSERT INTO busStops (routeID, stopName, arrivalTime )
         VALUES (@routeID, @stopName, @arrivalTime)
@@ -230,8 +251,8 @@ app.post("/add-bus-stop", async (req, res) => {
 
     res.json({ message: "Bus stop added successfully" });
   } catch (err) {
-    console.error("DB Error:", err.message);
-    res.status(500).json({ message: "DB Error" });
+    console.error("DB Error adding bus stop:", err);
+    res.status(500).json({ message: "DB Error adding bus stop", error: err.message });
   }
 });
 
@@ -597,7 +618,7 @@ app.get("/subscriber/:userID", async (req, res) => {
 
 
 // --------------------- SERVER START ---------------------
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 app.listen(PORT, () =>
-  console.log(`🚀 Server running on http://localhost:${PORT}`)
+  console.log(`🚀 Server running on ${PORT}`)
 );

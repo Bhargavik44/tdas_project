@@ -7,6 +7,7 @@ function DriverDashboard() {
   const [routeName, setRouteName] = useState("");
   const [busStops, setBusStops] = useState([]);
   const [alertMessage, setAlertMessage] = useState("");
+  const [routeStatusMsg, setRouteStatusMsg] = useState("");
   const [arrivedStopIds, setArrivedStopIds] = useState(() => {
     try {
       const raw = localStorage.getItem("arrivedStopIds");
@@ -31,11 +32,27 @@ function DriverDashboard() {
 
     const fetchRoute = async () => {
       try {
+        setRouteStatusMsg("");
         const res = await fetch(`${API_BASE}/driver-route/${driverID}`);
-        if (!res.ok) throw new Error("No route assigned");
+        if (res.status === 404) {
+          // No route assigned to this driver
+          setRouteName("");
+          setBusStops([]);
+          setRouteStatusMsg("Contact Transport Department to assign you any route for the day");
+          return;
+        }
+
+        if (!res.ok) throw new Error("Failed to fetch route");
+
         const data = await res.json();
         setRouteName(data.routeName);
-        setBusStops(data.busStops);
+        setBusStops(data.busStops || []);
+
+        if (!data.busStops || data.busStops.length === 0) {
+          setRouteStatusMsg("Contact your Transport Department to assign bus stops for your route");
+        } else {
+          setRouteStatusMsg("");
+        }
       } catch (err) {
         console.error(err);
         alert("Error fetching route data. Please contact admin.");
@@ -69,7 +86,7 @@ function DriverDashboard() {
       setArrivedStopIds(next);
       localStorage.setItem("arrivedStopIds", JSON.stringify(next));
 
-      if (data.status == "Delayed") {
+      if (data.status === "Delayed") {
         console.log("Sending SMS notification...");
 
         await fetch(`${API_BASE}/send-sms`, {
@@ -159,7 +176,7 @@ function DriverDashboard() {
                 }}>
                   <div>
                     <div style={{ fontWeight: 600 }}>{stop.stopName}</div>
-                    <div style={{ color: "#555", fontSize: 14 }}>Scheduled arrival: {stop.arrivalTime}{stop.departureTime ? ` • Departure: ${stop.departureTime}` : ""}</div>
+                    <div style={{ color: "#555", fontSize: 14 }}>Scheduled arrival: {stop.arrivalTime}</div>
                   </div>
                   <button
                     onClick={() => handleArrived(stop)}
@@ -172,7 +189,7 @@ function DriverDashboard() {
               ))}
             </div>
           ) : (
-            <p>No bus stops assigned yet.</p>
+            <p>{routeStatusMsg || "No bus stops assigned yet."}</p>
           )}
         </div>
 
