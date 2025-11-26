@@ -74,7 +74,7 @@ function DriverDashboard() {
 
         await fetch(`${API_BASE}/send-sms`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json" }, 
           body: JSON.stringify({
             routeID: data.routeID,
             stopID: data.stopID,

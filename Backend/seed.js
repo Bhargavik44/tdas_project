@@ -7,45 +7,12 @@ async function seed() {
     console.log("Seeding database...");
 
     //-----------------------------
-    // 1️⃣ Insert Users (Admin + Driver + Students)
-    //-----------------------------
-    const users = [
-      { username: "admin", mobileNo: 9000000001, password: "admin123", role: "admin" },
-      { username: "driver1", mobileNo: 9000000002, password: "driver123", role: "driver" },
-      { username: "driver2", mobileNo: 9000000003, password: "driver123", role: "driver" },
-
-      { username: "student1", mobileNo: 9000000004, password: "pass123", role: "student" },
-      { username: "student2", mobileNo: 9000000005, password: "pass123", role: "student" },
-      { username: "student3", mobileNo: 9000000006, password: "pass123", role: "student" }
-    ];
-
-    let insertedUsers = [];
-
-    for (const u of users) {
-      const result = await pool.request()
-        .input("username", u.username)
-        .input("mobileNo", u.mobileNo)
-        .input("password", u.password)
-        .input("role", u.role)
-        .query(`
-          INSERT INTO users (username, mobileNo, password, role)
-          OUTPUT INSERTED.userID
-          VALUES (@username, @mobileNo, @password, @role)
-        `);
-
-      insertedUsers.push({ ...u, userID: result.recordset[0].userID });
-    }
-
-    console.log("Users inserted:", insertedUsers);
-
-
-    //-----------------------------
     // 2️⃣ Create a Route
     //-----------------------------
     const driver1 = insertedUsers.find(u => u.username === "driver1");
 
     const routeResult = await pool.request()
-      .input("routeName", "Route A")
+      .input("routeName", "Route B")
       .input("driverID", driver1.userID)
       .query(`
         INSERT INTO driverRoutes (routeName, driverID)
@@ -61,9 +28,9 @@ async function seed() {
     // 3️⃣ Insert Stops for the Route
     //-----------------------------
     const stops = [
-      { stopName: "Main Gate", arrivalTime: "08:00" },
-      { stopName: "Library", arrivalTime: "08:10" },
-      { stopName: "Hostel", arrivalTime: "08:20" }
+      { stopName: "Pantaloons", arrivalTime: "6:40" },
+      { stopName: "Skywalk", arrivalTime: "06:50" },
+      { stopName: "Anna Arch", arrivalTime: "7:00" }
     ];
 
     let insertedStops = [];

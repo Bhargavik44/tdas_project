@@ -109,7 +109,7 @@ function SubscriberDashboard() {
       <div className="sd-navbar">
         <div className="title">Subscriber Dashboard</div>
         <button className="btn-nav" onClick={() => navigate("/")}>
-          Home
+          Logout
         </button>
       </div>
 

@@ -215,7 +215,7 @@ app.post("/assign-driver", async (req, res) => {
 
 // ✅ ADD BUS STOP
 app.post("/add-bus-stop", async (req, res) => {
-  const { routeID, stopName, arrivalTime, departureTime } = req.body;
+  const { routeID, stopName, arrivalTime } = req.body;
 
   try {
     const pool = await poolPromise;
@@ -223,10 +223,9 @@ app.post("/add-bus-stop", async (req, res) => {
       .input("routeID", routeID)
       .input("stopName", stopName)
       .input("arrivalTime", arrivalTime)
-      .input("departureTime", departureTime)
       .query(`
-        INSERT INTO busStops (routeID, stopName, arrivalTime, departureTime)
-        VALUES (@routeID, @stopName, @arrivalTime, @departureTime)
+        INSERT INTO busStops (routeID, stopName, arrivalTime )
+        VALUES (@routeID, @stopName, @arrivalTime)
       `);
 
     res.json({ message: "Bus stop added successfully" });
@@ -371,7 +370,7 @@ app.post("/arrive", async (req, res) => {
     // Minimal notification dispatcher placeholder
     if (delayMinutes > threshold) {
       console.log(
-        `Dispatcher: Route ${stop.routeID}, Stop ${stop.stopName} delayed by ${delayMinutes} mins. (Would send SMS here)`
+        `Dispatcher: Route ${stop.routeID}, Stop ${stop.stopName} delayed by ${delayMinutes} mins.`
       );
     }
 

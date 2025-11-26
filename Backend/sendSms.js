@@ -19,7 +19,7 @@ export async function sendSms(to, message) {
       }
     });
 
-    console.log("Infobip SMS response:", JSON.stringify(response.data, null, 2));
+    console.log("Infobip SMS response:", response.data); // JSON.stringify(response.data, null, 2)
     return true;
 
   } catch (error) {

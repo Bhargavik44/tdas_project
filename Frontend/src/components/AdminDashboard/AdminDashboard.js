@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AdminDashboard.css";
-
 import { API_BASE } from "../../utils/api";
 
 function AdminDashboard() {
@@ -25,7 +24,6 @@ function AdminDashboard() {
     routeID: "",
     stopName: "",
     arrivalTime: "",
-    departureTime: "",
   });
 
   const [changeDriverData, setChangeDriverData] = useState({
@@ -38,7 +36,6 @@ function AdminDashboard() {
     stopID: "",
     stopName: "",
     arrivalTime: "",
-    departureTime: "",
   });
 
   const [newRoute, setNewRoute] = useState({
@@ -238,14 +235,6 @@ function AdminDashboard() {
               value={addBusStopData.arrivalTime}
               onChange={(e) =>
                 setAddBusStopData({ ...addBusStopData, arrivalTime: e.target.value })
-              }
-            />
-
-            <input
-              type="time"
-              value={addBusStopData.departureTime}
-              onChange={(e) =>
-                setAddBusStopData({ ...addBusStopData, departureTime: e.target.value })
               }
             />
 

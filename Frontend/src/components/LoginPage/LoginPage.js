@@ -21,6 +21,7 @@ function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    console.log("API BASE FROM ENV =", process.env.REACT_APP_API_BASE_URL);
     try {
       const res = await fetch(`${API_BASE}/login`, {
         method: "POST",
