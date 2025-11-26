@@ -569,6 +569,30 @@ app.post("/subscribers", async (req, res) => {
   }
 });
 
+// ✅ GET LATE ARRIVALS LOG (for admin)
+app.get("/arrivals/late", async (req, res) => {
+  try {
+    const pool = await poolPromise;
+    const result = await pool.request().query(`
+      SELECT a.arrivalID, a.actualArrival, a.delayMinutes, a.status,
+             u.userID, u.username,
+             bs.stopID, bs.stopName,
+             dr.routeID, dr.routeName
+      FROM arrivals a
+      JOIN users u ON u.userID = a.driverID
+      JOIN busStops bs ON bs.stopID = a.stopID
+      JOIN driverRoutes dr ON dr.routeID = a.routeID
+      WHERE a.status = 'Delayed'
+      ORDER BY a.actualArrival DESC
+    `);
+
+    res.json(result.recordset);
+  } catch (err) {
+    console.error("DB Error fetching late arrivals:", err.message);
+    res.status(500).json({ message: "DB Error" });
+  }
+});
+
 // GET SUBSCRIBER BY MOBILE (legacy)
 app.get("/subscribers/:mobileNo", async (req, res) => {
   try {

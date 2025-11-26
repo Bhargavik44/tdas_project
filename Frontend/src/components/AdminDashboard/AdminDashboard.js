@@ -42,6 +42,7 @@ function AdminDashboard() {
     routeName: "",
     numStops: "",
   });
+  const [lateArrivals, setLateArrivals] = useState([]);
 
   useEffect(() => {
     fetch(`${API_BASE}/drivers`)
@@ -53,6 +54,21 @@ function AdminDashboard() {
       .then((res) => res.json())
       .then((data) => setRoutes(data))
       .catch((err) => console.error(err));
+  }, []);
+
+  useEffect(() => {
+    // fetch late arrivals for admin view
+    const fetchLate = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/arrivals/late`);
+        if (!res.ok) throw new Error("Failed to fetch late arrivals");
+        const data = await res.json();
+        setLateArrivals(data);
+      } catch (err) {
+        console.error("Could not load late arrivals:", err);
+      }
+    };
+    fetchLate();
   }, []);
 
   useEffect(() => {
@@ -159,6 +175,47 @@ function AdminDashboard() {
         <button onClick={() => setActiveForm("modifyBusStop")}>Modify Bus Stops</button>
         <button onClick={() => setActiveForm("addRoute")}>Add Route</button>
         <button onClick={() => setActiveForm("addDriver")}>Add Driver</button>
+      </div>
+      {/* Late arrivals log */}
+      <div className="late-log">
+        <div className="late-log-header">
+          <h3>Late Arrivals Log</h3>
+          <button onClick={async () => {
+            try {
+              const res = await fetch(`${API_BASE}/arrivals/late`);
+              const data = await res.json();
+              setLateArrivals(data);
+            } catch (err) { console.error(err); }
+          }}>Refresh</button>
+        </div>
+        {lateArrivals.length === 0 ? (
+          <p className="empty-state">No late arrivals recorded.</p>
+        ) : (
+          <div className="late-table-wrap">
+            <table className="late-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Driver</th>
+                  <th>Route</th>
+                  <th>Stop</th>
+                  <th>Delay (mins)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {lateArrivals.map((r) => (
+                  <tr key={r.arrivalID}>
+                    <td>{new Date(r.actualArrival).toLocaleString()}</td>
+                    <td>{r.username} (#{r.userID})</td>
+                    <td>{r.routeName}</td>
+                    <td>{r.stopName}</td>
+                    <td>{r.delayMinutes}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
       <button className="admin-logout-button" onClick={handleLogout}>Logout</button>
       <div className="form-container">

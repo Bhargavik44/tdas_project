@@ -192,6 +192,34 @@
   cursor: pointer;
 }
 
+/* Late arrivals log styles */
+.late-log{
+  margin-top: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  max-width: 980px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.late-log-header{display:flex;justify-content:space-between;align-items:center}
+.late-log-header h3{margin:0;color:#fff}
+.late-log-header button{background:rgba(255,255,255,0.12);color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
+.late-log-header button:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,0.2)}
+
+.late-table-wrap{overflow:auto;background:rgba(255,255,255,0.06);padding:12px;border-radius:12px}
+.late-table{width:100%;border-collapse:collapse;color:#fff}
+.late-table thead th{background:rgba(255,255,255,0.06);padding:10px;text-align:left;font-weight:700}
+.late-table tbody td{padding:12px;border-top:1px solid rgba(255,255,255,0.04)}
+.late-table tbody tr:hover{background:rgba(255,255,255,0.03);transform:translateY(-2px)}
+
+@media (max-width:800px){
+  .late-table thead{display:none}
+  .late-table tbody td{display:block;padding:10px}
+  .late-table tbody tr{margin-bottom:12px;border-radius:10px;padding:8px;background:rgba(255,255,255,0.03)}
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
