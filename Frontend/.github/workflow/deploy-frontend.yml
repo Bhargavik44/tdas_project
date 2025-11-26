@@ -20,22 +20,18 @@ jobs:
 
       - name: Install Dependencies
         run: npm install
+        working-directory: Frontend
 
       - name: Build React App
         run: npm run build
+        working-directory: Frontend
 
       - name: Zip build folder
-        run: zip -r release.zip build/
-
-      - name: Azure Login using SP
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        run: zip -r release.zip Frontend/build/
 
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'tdas-frontend'
-          package: 'release.zip'
+          app-name: tdas-frontend
+          package: release.zip
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
