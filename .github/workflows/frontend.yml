@@ -20,14 +20,14 @@ jobs:
 
       - name: Install Dependencies
         run: npm install
-        working-directory: Frontend
+        working-directory: ./Frontend
 
       - name: Build React App
         run: npm run build
-        working-directory: Frontend
+        working-directory: ./Frontend
 
       - name: Zip build folder
-        run: zip -r release.zip Frontend/build/
+        run: zip -r release.zip ./Frontend/build
 
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v2
